@@ -1,0 +1,234 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flaskmaterial
+spec:
+  type: NodePort
+  selector:
+    app: flaskmaterial
+  ports:
+  - port: 5005
+    targetPort: 5005
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskmaterial
+  labels:
+    app: flaskmaterial
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskmaterial
+  template:
+    metadata:
+      labels:
+        app: flaskmaterial
+    spec:
+      containers:
+      - name: flaskmaterial
+        image: flaskmaterial:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5005
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flaskadminator
+spec:
+  type: NodePort
+  selector:
+    app: flaskadminator
+  ports:
+  - port: 5005
+    targetPort: 5005
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskadminator
+  labels:
+    app: flaskadminator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskadminator
+  template:
+    metadata:
+      labels:
+        app: flaskadminator
+    spec:
+      containers:
+      - name: flaskadminator
+        image: flaskadminator:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5005
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flasklight
+spec:
+  type: NodePort
+  selector:
+    app: flasklight
+  ports:
+  - port: 5005
+    targetPort: 5005
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flasklight
+  labels:
+    app: flasklight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flasklight
+  template:
+    metadata:
+      labels:
+        app: flasklight
+    spec:
+      containers:
+      - name: flasklight
+        image: flasklight:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5005
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flaskvolt
+spec:
+  type: NodePort
+  selector:
+    app: flaskvolt
+  ports:
+  - port: 5005
+    targetPort: 5005
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskvolt
+  labels:
+    app: flaskvolt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskvolt
+  template:
+    metadata:
+      labels:
+        app: flaskvolt
+    spec:
+      containers:
+      - name: flaskvolt
+        image: flaskvolt:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5005
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-flasksoft
+spec:
+  type: NodePort
+  selector:
+    app: flasksoft
+  ports:
+  - port: 5005
+    targetPort: 5005
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flasksoft
+  labels:
+    app: flasksoft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flasksoft
+  template:
+    metadata:
+      labels:
+        app: flasksoft
+    spec:
+      containers:
+      - name: flasksoft
+        image: flasksoft:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5005
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: flaskhpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: flaskdeployment
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: application
+      target:
+        type: Utilization
+        averageUtilization: 60
